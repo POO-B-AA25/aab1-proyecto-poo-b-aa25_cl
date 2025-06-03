@@ -1,0 +1,7 @@
+Ventas por Producto
+idProducto;nombreProducto;cantidadVendida;montoTotal
+00000048;Pegamento escolar 120ml;12;15,00
+
+Ventas por Categoría
+categoria;cantidadVendida;montoTotal
+EDUCACION;12;15,00
