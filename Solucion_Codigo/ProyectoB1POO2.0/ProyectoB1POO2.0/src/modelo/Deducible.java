@@ -1,7 +1,6 @@
 package modelo;
 
 public class Deducible {
-    /** Devuelve porcentaje de deducción en base a la categoría (String) */
     public double getPorcentaje(String categoria) {
         String cat = categoria.trim().toUpperCase();
         if (cat.equals("ALIMENTACION")) {

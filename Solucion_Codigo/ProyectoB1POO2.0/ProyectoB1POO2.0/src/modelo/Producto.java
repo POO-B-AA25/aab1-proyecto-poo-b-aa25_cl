@@ -29,9 +29,6 @@ public class Producto implements Serializable{
         this.fechaCaducidad = LocalDate.now().plusDays(dias);
     }
 
-    /**
-     * Disminuye el stock. Retorna true si hubo stock suficiente; false si no.
-     */
     public boolean disminuirStock(int cantidad) {
         if (cantidad <= this.cantidadStock) {
             this.cantidadStock -= cantidad;
@@ -40,7 +37,6 @@ public class Producto implements Serializable{
         return false;
     }
 
-    /** Aumenta el stock en la cantidad indicada */
     public void aumentarStock(int cantidad) {
         this.cantidadStock += cantidad;
     }

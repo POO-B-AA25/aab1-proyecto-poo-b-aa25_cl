@@ -2,10 +2,6 @@ package modelo;
 
 import java.util.ArrayList;
 
-/**
- * Representa el inventario en memoria con un ArrayList de productos,
- * y métodos para agregar, buscar y mostrar el inventario.
- */
 public class Inventario {
     public ArrayList<Producto> productos;
 

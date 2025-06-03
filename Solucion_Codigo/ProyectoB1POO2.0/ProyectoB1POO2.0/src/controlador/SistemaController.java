@@ -206,7 +206,7 @@ public class SistemaController {
 
         // Calcular totales
         fac.calcularSubtotal();
-        fac.calcularIva(0.12);
+        fac.calcularIva(0.15);
         fac.calcularTotal(deducible);
 
         // Mostrar factura
