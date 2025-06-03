@@ -11,40 +11,31 @@ import java.util.Formatter;
 import java.util.Locale;
 import java.util.Scanner;
 
-/**
- * Controlador que maneja:
- *  - Inventario (cargar/guardar CSV)
- *  - Agregar producto
- *  - Crear factura (descontar stock, guardar factura en CSV)
- *  - Mantener estadísticas (acumular y guardar en CSV)
- */
 public class SistemaController {
+
     private Inventario inventario;
     private Deducible deducible;
     private EstadisticaVentas estadisticas;
 
     private final String nombreArchivoInventario = "datosinventario.csv";
-    private final String nombreArchivoFacturas   = "datosfacturas.csv";
+    private final String nombreArchivoFacturas = "datosfacturas.csv";
+
     
-    // Formatter para manejar números con coma decimal
     private final NumberFormat numberFormat;
 
     public SistemaController() {
         // Configurar el formatter para manejar números con coma
         numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
-        
+
         // 1) Cargar inventario desde CSV
-        inventario    = new Inventario();
+        inventario = new Inventario();
         cargarInventarioCSV();
 
         // 2) Inicializar objetos de deducción y estadísticas
-        deducible     = new Deducible();
-        estadisticas  = new EstadisticaVentas();
+        deducible = new Deducible();
+        estadisticas = new EstadisticaVentas();
     }
 
-    /**
-     * Método auxiliar para parsear números que pueden tener coma o punto como separador decimal
-     */
     private double parseDouble(String numeroStr) throws ParseException {
         // Intentar primero con el formato local (coma)
         try {
@@ -61,7 +52,6 @@ public class SistemaController {
         }
     }
 
-    /** Lee "datosinventario.csv" y carga todos los productos en el ArrayList del inventario. */
     private void cargarInventarioCSV() {
         File file = new File(nombreArchivoInventario);
         if (!file.exists()) {
@@ -79,17 +69,20 @@ public class SistemaController {
             while (sc.hasNextLine()) {
                 lineaActual++;
                 String linea = sc.nextLine().trim();
-                if (linea.isEmpty()) continue;
-                if (linea.startsWith("idProducto;")) continue; // saltar cabecera
-                
+                if (linea.isEmpty()) {
+                    continue;
+                }
+                if (linea.startsWith("idProducto;")) {
+                    continue; // saltar cabecera
+                }
                 try {
                     String[] partes = linea.split(";");
                     if (partes.length >= 6) {
                         Producto p = new Producto();
-                        p.idProducto    = partes[0];
-                        p.nombre        = partes[1];
-                        p.categoria     = partes[2];
-                        p.precioNormal  = parseDouble(partes[3]); // Usar método personalizado
+                        p.idProducto = partes[0];
+                        p.nombre = partes[1];
+                        p.categoria = partes[2];
+                        p.precioNormal = parseDouble(partes[3]); // Usar método personalizado
                         p.cantidadStock = Integer.parseInt(partes[4]);
                         p.fechaCaducidad = java.time.LocalDate.parse(partes[5]);
                         inventario.agregarProducto(p);
@@ -105,39 +98,31 @@ public class SistemaController {
         }
     }
 
-    /** Sobrescribe "datosinventario.csv" con el estado actual del inventario. */
     private void guardarInventarioCSV() {
         try (Formatter f = new Formatter(nombreArchivoInventario)) {
             f.format("idProducto;nombre;categoria;precioNormal;cantidadStock;fechaCaducidad%n");
             for (Producto p : inventario.productos) {
                 // Usar formato consistente con punto decimal para el archivo
                 f.format("%s;%s;%s;%.2f;%d;%s%n",
-                    p.idProducto, p.nombre, p.categoria, p.precioNormal, p.cantidadStock,
-                    p.fechaCaducidad.toString());
+                        p.idProducto, p.nombre, p.categoria, p.precioNormal, p.cantidadStock,
+                        p.fechaCaducidad.toString());
             }
         } catch (Exception e) {
             System.err.println("Error guardar inventario: " + e.getMessage());
         }
     }
 
-    /** Muestra el inventario en consola (llama a Inventario.listarInventario()). */
     public void mostrarInventario() {
         inventario.listarInventario();
     }
 
-    /**
-     * Flujo para agregar un producto:
-     *  - Lee datos desde Scanner
-     *  - Crea un objeto Producto (con fecha caducidad aleatoria)
-     *  - Lo agrega al inventario en memoria y reescribe CSV
-     */
     public void agregarProductoFlujo(Scanner sc) {
         System.out.println("=== AGREGAR PRODUCTO ===");
         System.out.print("Nombre: ");
         String nombre = sc.nextLine().trim();
         System.out.print("Categoría: ");
         String categoria = sc.nextLine().trim();
-        
+
         double precio = 0;
         boolean precioValido = false;
         while (!precioValido) {
@@ -150,26 +135,17 @@ public class SistemaController {
                 System.out.println("Error: " + e.getMessage() + ". Intente nuevamente.");
             }
         }
-        
+
         System.out.print("Cantidad inicial: ");
         int cantidad = Integer.parseInt(sc.nextLine().trim());
 
         Producto p = new Producto(nombre, categoria, precio, cantidad);
         inventario.agregarProducto(p);
         guardarInventarioCSV();
-        System.out.println("[OK] Producto agregado, ID=" + p.idProducto +
-            " | Caduca=" + p.fechaCaducidad.toString());
+        System.out.println("[OK] Producto agregado, ID=" + p.idProducto
+                + " | Caduca=" + p.fechaCaducidad.toString());
     }
 
-    /**
-     * Flujo para crear una factura:
-     *  - Lee datos de cliente
-     *  - Permite agregar líneas (ID producto + cantidad)
-     *  - Descuenta stock, reescribe inventario CSV
-     *  - Calcula totales, muestra factura
-     *  - Guarda factura en archivo CSV en modo append
-     *  - Actualiza estadísticas y las guarda en "datosestadisticas.csv"
-     */
     public void crearFacturaFlujo(Scanner sc) {
         Factura fac = new Factura();
         System.out.println("=== DATOS DE CLIENTE ===");
@@ -191,7 +167,9 @@ public class SistemaController {
             mostrarInventario();
             System.out.print("ID producto a vender (o 0 para terminar): ");
             String idp = sc.nextLine().trim();
-            if (idp.equals("0")) break;
+            if (idp.equals("0")) {
+                break;
+            }
             Producto prod = inventario.buscarProducto(idp);
             if (prod == null) {
                 System.out.println("[Error] Producto no existe.");
@@ -214,7 +192,9 @@ public class SistemaController {
 
             System.out.print("¿Agregar otro producto? (S/N): ");
             String r = sc.nextLine().trim().toUpperCase();
-            if (!r.equals("S")) cont = false;
+            if (!r.equals("S")) {
+                cont = false;
+            }
         }
 
         if (fac.lineas.isEmpty()) {
@@ -240,45 +220,32 @@ public class SistemaController {
         estadisticas.guardarEstadisticasCSV();
     }
 
-    /** 
-     * Agrega al archivo "datosfacturas.csv" la factura recién creada (modo append). 
-     * Formato:
-     *  - Encabezado de factura:
-     *      idFactura;fecha;clienteId;clienteNombre;correo;telefono;direccion;subtotal;iva;total
-     *  - Líneas de detalle:
-     *      idFactura;idProducto;nombreProducto;categoría;cantidad;precioUnitario;subtotalLinea
-     */
+
     private void guardarFacturaCSV(Factura fac) {
         File file = new File(nombreArchivoFacturas);
         boolean existe = file.exists();
         try (Formatter f = new Formatter(new java.io.FileOutputStream(file, true))) {
-            if (!existe) {
-                // Agregar comentarios explicativos la primera vez
-                f.format("# Facturas%n");
-                f.format("# Encabezado: idFactura;fecha;clienteId;clienteNombre;correo;telefono;direccion;subtotal;iva;total%n");
-                f.format("# Detalle: idFactura;idProducto;nombreProducto;categoria;cantidad;precioUnitario;subtotalLinea%n");
-            }
+            f.format("# Facturas%n");
+            f.format("# Encabezado: idFactura;fecha;clienteId;clienteNombre;correo;telefono;direccion;subtotal;iva;total%n");
+
             String fecha = fac.fechaEmision.toString();
-            // Línea de encabezado
-            f.format("%s;%s;%s;%s;%s;%s;%s;%.2f;%.2f;%.2f%n",
-                fac.idFactura, fecha,
-                fac.cliente.idCliente, fac.cliente.nombre,
-                fac.cliente.correo, fac.cliente.telefono,
-                fac.cliente.direccion,
-                fac.subtotal, fac.iva, fac.total
-            );
-            // Líneas de detalle
             
-            if (!existe) {
-                f.format("# Detalle: idFactura;idProducto;nombreProducto;categoria;cantidad;precioUnitario;subtotalLinea%n");
-                f.format("%n");
-            }
+            f.format("%s;%s;%s;%s;%s;%s;%s;%.2f;%.2f;%.2f%n",
+                    fac.idFactura, fecha,
+                    fac.cliente.idCliente, fac.cliente.nombre,
+                    fac.cliente.correo, fac.cliente.telefono,
+                    fac.cliente.direccion,
+                    fac.subtotal, fac.iva, fac.total
+            );
+            
+
+            f.format("# Detalle: idFactura;idProducto;nombreProducto;categoria;cantidad;precioUnitario;subtotalLinea%n");          
             for (LineaFactura lf : fac.lineas) {
                 f.format("%s;%s;%s;%s;%d;%.2f;%.2f%n",
-                    fac.idFactura,
-                    lf.producto.idProducto, lf.producto.nombre,
-                    lf.producto.categoria,
-                    lf.cantidad, lf.precioUnitario, lf.subtotalLinea
+                        fac.idFactura,
+                        lf.producto.idProducto, lf.producto.nombre,
+                        lf.producto.categoria,
+                        lf.cantidad, lf.precioUnitario, lf.subtotalLinea
                 );
             }
             f.format("%n");
@@ -287,7 +254,9 @@ public class SistemaController {
         }
     }
 
-    /** Muestra estadísticas: productos más/menos vendidos y categoría top. */
+    /**
+     * Muestra estadísticas: productos más/menos vendidos y categoría top.
+     */
     public void mostrarEstadisticas() {
         estadisticas.mostrarMasMenosVendidos();
     }

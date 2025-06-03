@@ -1,0 +1,35 @@
+# Facturas
+# Encabezado: idFactura;fecha;clienteId;clienteNombre;correo;telefono;direccion;subtotal;iva;total
+# Detalle: idFactura;idProducto;nombreProducto;categoria;cantidad;precioUnitario;subtotalLinea
+1d96f6fb;2025-06-03;12313;123213;12313;12313;123;9,00;1,08;8,28
+# Detalle: idFactura;idProducto;nombreProducto;categoria;cantidad;precioUnitario;subtotalLinea
+
+1d96f6fb;00000037;Fósforos caja x 3;VIVIENDA;12;0,75;9,00
+
+fde39dfa;2025-06-03;D;12313;12313;12313;12313;420,00;50,40;365,40
+fde39dfa;00000053;Abrigo ligero talla L;VESTIMENTA;12;35,00;420,00
+
+fda729f1;2025-06-03;asdsad;adsad;asdada;dssad;sadad;10,20;1,22;8,36
+fda729f1;00000047;Regla de 30cm;EDUCACION;12;0,85;10,20
+
+# Facturas
+# Encabezado: idFactura;fecha;clienteId;clienteNombre;correo;telefono;direccion;subtotal;iva;total
+# Detalle: idFactura;idProducto;nombreProducto;categoria;cantidad;precioUnitario;subtotalLinea
+581aeef0;2025-06-03;12321321;1231321;1231321;1232131;12313;10,20;1,22;8,36
+# Detalle: idFactura;idProducto;nombreProducto;categoria;cantidad;precioUnitario;subtotalLinea
+
+581aeef0;00000047;Regla de 30cm;EDUCACION;12;0,85;10,20
+
+# Facturas
+# Encabezado: idFactura;fecha;clienteId;clienteNombre;correo;telefono;direccion;subtotal;iva;total
+bea41049;2025-06-03;adsad;asdasda;dsad;asdasd;asdad;354,00;42,48;307,98
+# Detalle: idFactura;idProducto;nombreProducto;categoria;cantidad;precioUnitario;subtotalLinea
+
+bea41049;00000051;Zapatos deportivos talla 42;VESTIMENTA;12;29,50;354,00
+
+# Facturas
+# Encabezado: idFactura;fecha;clienteId;clienteNombre;correo;telefono;direccion;subtotal;iva;total
+ec30f7d8;2025-06-03;123123;12321321;312321;13213;123;420,00;50,40;365,40
+# Detalle: idFactura;idProducto;nombreProducto;categoria;cantidad;precioUnitario;subtotalLinea
+ec30f7d8;00000053;Abrigo ligero talla L;VESTIMENTA;12;35,00;420,00
+
