@@ -3,6 +3,10 @@ package controlador;
 import modelo.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -20,7 +24,6 @@ public class SistemaController {
     private final String nombreArchivoInventario = "datosinventario.csv";
     private final String nombreArchivoFacturas = "datosfacturas.csv";
 
-    
     private final NumberFormat numberFormat;
 
     public SistemaController() {
@@ -142,8 +145,7 @@ public class SistemaController {
         Producto p = new Producto(nombre, categoria, precio, cantidad);
         inventario.agregarProducto(p);
         guardarInventarioCSV();
-        System.out.println("[OK] Producto agregado, ID=" + p.idProducto
-                + " | Caduca=" + p.fechaCaducidad.toString());
+        System.out.println("[OK] Producto agregado, ID=" + p.idProducto + " | Caduca=" + p.fechaCaducidad.toString());
     }
 
     public void crearFacturaFlujo(Scanner sc) {
@@ -220,7 +222,6 @@ public class SistemaController {
         estadisticas.guardarEstadisticasCSV();
     }
 
-
     private void guardarFacturaCSV(Factura fac) {
         File file = new File(nombreArchivoFacturas);
         boolean existe = file.exists();
@@ -229,7 +230,7 @@ public class SistemaController {
             f.format("# Encabezado: idFactura;fecha;clienteId;clienteNombre;correo;telefono;direccion;subtotal;iva;total%n");
 
             String fecha = fac.fechaEmision.toString();
-            
+
             f.format("%s;%s;%s;%s;%s;%s;%s;%.2f;%.2f;%.2f%n",
                     fac.idFactura, fecha,
                     fac.cliente.idCliente, fac.cliente.nombre,
@@ -237,9 +238,8 @@ public class SistemaController {
                     fac.cliente.direccion,
                     fac.subtotal, fac.iva, fac.total
             );
-            
 
-            f.format("# Detalle: idFactura;idProducto;nombreProducto;categoria;cantidad;precioUnitario;subtotalLinea%n");          
+            f.format("# Detalle: idFactura;idProducto;nombreProducto;categoria;cantidad;precioUnitario;subtotalLinea%n");
             for (LineaFactura lf : fac.lineas) {
                 f.format("%s;%s;%s;%s;%d;%.2f;%.2f%n",
                         fac.idFactura,
@@ -248,15 +248,27 @@ public class SistemaController {
                         lf.cantidad, lf.precioUnitario, lf.subtotalLinea
                 );
             }
+
             f.format("%n");
+            serializarFactura(fac);
+
         } catch (Exception e) {
             System.err.println("Error guardar factura: " + e.getMessage());
         }
+
+        
     }
 
-    /**
-     * Muestra estadísticas: productos más/menos vendidos y categoría top.
-     */
+    private void serializarFactura(Factura factura) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream("facturas/factura_" + factura.idFactura + ".ser"))) {
+            oos.writeObject(factura);
+            System.out.println("[SERIALIZADO] Factura guardada en: factura_" + factura.idFactura + ".ser");
+        } catch (IOException e) {
+            System.err.println("Error serializar factura: " + e.getMessage());
+        }
+    }
+
     public void mostrarEstadisticas() {
         estadisticas.mostrarMasMenosVendidos();
     }

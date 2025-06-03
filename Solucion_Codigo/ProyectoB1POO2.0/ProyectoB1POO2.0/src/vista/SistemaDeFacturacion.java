@@ -3,15 +3,6 @@ package vista;
 import controlador.SistemaController;
 import java.util.Scanner;
 
-/**
- * Vista principal de consola:
- *  Muestra un menú con las opciones:
- *   1. Ver inventario
- *   2. Agregar producto
- *   3. Hacer factura
- *   4. Ver estadísticas de ventas
- *   0. Salir
- */
 public class SistemaDeFacturacion {
     public static void main(String[] args) {
         SistemaController ctrl = new SistemaController();

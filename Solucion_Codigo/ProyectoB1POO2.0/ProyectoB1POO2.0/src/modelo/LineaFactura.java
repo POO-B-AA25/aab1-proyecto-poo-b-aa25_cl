@@ -1,13 +1,9 @@
 package modelo;
 
-/**
- * Representa una línea de detalle en la factura:
- *  - producto (objeto Producto)
- *  - cantidad (int)
- *  - precioUnitario (double)
- *  - subtotalLinea = cantidad × precioUnitario
- */
-public class LineaFactura {
+import java.io.Serializable;
+
+
+public class LineaFactura implements Serializable {
     public Producto producto;
     public int cantidad;
     public double precioUnitario;
@@ -30,7 +26,7 @@ public class LineaFactura {
     @Override
     public String toString() {
         return String.format(
-            "%-8s | %-25s | %4d | %8.2f | %8.2f",
+            "%-30s | %-30s | %4d | %8.2f | %8.2f",
             producto.idProducto, producto.nombre,
             cantidad, precioUnitario, subtotalLinea
         );

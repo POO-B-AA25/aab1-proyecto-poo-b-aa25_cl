@@ -1,15 +1,9 @@
 package modelo;
 
-/**
- * Representa un cliente para la factura.
- * Campos:
- *  - idCliente
- *  - nombre
- *  - correo
- *  - telefono
- *  - direccion
- */
-public class Cliente {
+import java.io.Serializable;
+
+
+public class Cliente implements Serializable{
     public String idCliente;
     public String nombre;
     public String correo;
@@ -28,7 +22,6 @@ public class Cliente {
 
     @Override
     public String toString() {
-        return String.format("%s | %s | %s | %s | %s",
-            idCliente, nombre, correo, telefono, direccion);
+        return String.format("ID: %s | Nombre: %s | Correo: %s | Telefono: %s | Direccion: %s", idCliente, nombre, correo, telefono, direccion);
     }
 }

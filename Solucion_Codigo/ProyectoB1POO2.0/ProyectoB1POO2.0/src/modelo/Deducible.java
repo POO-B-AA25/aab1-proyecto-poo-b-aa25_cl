@@ -1,14 +1,5 @@
 package modelo;
 
-/**
- * Calcula el porcentaje de deducción según categoría (cadena):
- *  ALIMENTACION:  35%
- *  EDUCACION:     30%
- *  VIVIENDA:      20%
- *  VESTIMENTA:    25%
- *  SALUD:         40%
- *  Cualquier otra: 0%
- */
 public class Deducible {
     /** Devuelve porcentaje de deducción en base a la categoría (String) */
     public double getPorcentaje(String categoria) {

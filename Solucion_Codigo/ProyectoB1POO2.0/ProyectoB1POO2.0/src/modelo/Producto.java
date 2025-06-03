@@ -1,20 +1,11 @@
 package modelo;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
 import java.util.Random;
 
-/**
- * Representa un producto en el inventario.
- * Contiene:
- *  - idProducto: ID único generado
- *  - nombre
- *  - categoria (String)
- *  - precioNormal
- *  - cantidadStock
- *  - fechaCaducidad (aleatoria al crear)
- */
-public class Producto {
+public class Producto implements Serializable{
     public String idProducto;
     public String nombre;
     public String categoria;
@@ -22,13 +13,10 @@ public class Producto {
     public int cantidadStock;
     public LocalDate fechaCaducidad;
 
-    /** Constructor vacío */
+
     public Producto() {}
 
-    /**
-     * Constructor completo.
-     * Asigna fecha de caducidad aleatoria entre 1 y 30 días desde hoy.
-     */
+
     public Producto(String nombre, String categoria, double precioNormal, int cantidadStock) {
         this.idProducto    = UUID.randomUUID().toString().substring(0, 8);
         this.nombre        = nombre;
